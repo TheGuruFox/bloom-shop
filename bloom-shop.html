@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bloom — Handcrafted Botanicals</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFEFB;
+    --sage: #7A8C6E;
+    --sage-light: #A8B89A;
+    --sage-pale: #E8EDE4;
+    --terracotta: #C4714A;
+    --terracotta-light: #E8A882;
+    --bark: #3D2F25;
+    --bark-mid: #6B5142;
+    --stone: #9A8F85;
+    --stone-light: #D9D2CB;
+    --gold: #B8963A;
+    --text-dark: #2A2118;
+    --text-mid: #5C4E42;
+    --text-light: #9A8F85;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    overflow-x: hidden;
+  }
+
+  /* ── CURSOR ── */
+  * { cursor: none; }
+  #cursor {
+    position: fixed; top: 0; left: 0; z-index: 9999;
+    width: 10px; height: 10px;
+    background: var(--terracotta);
+    border-radius: 50%;
+    pointer-events: none;
+    transition: transform 0.15s ease, background 0.2s ease;
+    transform: translate(-50%, -50%);
+  }
+  #cursor-ring {
+    position: fixed; top: 0; left: 0; z-index: 9998;
+    width: 32px; height: 32px;
+    border: 1.5px solid var(--terracotta);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0.5;
+    transition: transform 0.35s ease;
+    transform: translate(-50%, -50%);
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 48px;
+    background: rgba(250,247,242,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--stone-light);
+    transition: padding 0.3s ease;
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; font-weight: 300; letter-spacing: 0.12em;
+    color: var(--bark);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--terracotta); font-style: italic; }
+  .nav-links {
+    display: flex; gap: 36px; list-style: none;
+  }
+  .nav-links a {
+    font-size: 12px; font-weight: 500; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--text-mid);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.2s;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
+    height: 1px; background: var(--terracotta);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--terracotta); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-actions {
+    display: flex; align-items: center; gap: 20px;
+  }
+  .nav-icon {
+    background: none; border: none; font-size: 18px;
+    color: var(--bark); position: relative;
+  }
+  .cart-badge {
+    position: absolute; top: -6px; right: -6px;
+    width: 16px; height: 16px;
+    background: var(--terracotta); color: white;
+    border-radius: 50%; font-size: 9px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Jost', sans-serif;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    padding-top: 80px;
+    overflow: hidden;
+  }
+  .hero-left {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 80px 64px 80px 80px;
+    position: relative;
+  }
+  .hero-eyebrow {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--sage);
+    margin-bottom: 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block;
+    width: 32px; height: 1px; background: var(--sage);
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 72px; font-weight: 300; line-height: 1.05;
+    color: var(--bark);
+    margin-bottom: 28px;
+  }
+  .hero-title em {
+    font-style: italic; color: var(--terracotta);
+  }
+  .hero-sub {
+    font-size: 15px; font-weight: 300; line-height: 1.75;
+    color: var(--text-mid); max-width: 380px;
+    margin-bottom: 48px;
+  }
+  .hero-ctas { display: flex; align-items: center; gap: 24px; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 36px;
+    background: var(--bark); color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.16em;
+    text-transform: uppercase; text-decoration: none; border: none;
+    transition: background 0.25s, transform 0.2s;
+  }
+  .btn-primary:hover { background: var(--terracotta); transform: translateY(-2px); }
+  .btn-secondary {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--bark);
+    text-decoration: none;
+    border-bottom: 1px solid var(--bark);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .btn-secondary:hover { color: var(--terracotta); border-color: var(--terracotta); }
+  .hero-trust {
+    position: absolute; bottom: 56px; left: 80px;
+    display: flex; gap: 32px;
+  }
+  .trust-item {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .trust-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 300; color: var(--bark);
+  }
+  .trust-label {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--stone);
+  }
+
+  .hero-right {
+    position: relative; overflow: hidden;
+    background: var(--sage-pale);
+  }
+  .hero-img-grid {
+    position: absolute; inset: 0;
+    display: grid; grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;
+  }
+  .hero-img-cell {
+    background: var(--sage-pale);
+    position: relative; overflow: hidden;
+  }
+  .hero-img-cell img { width: 100%; height: 100%; object-fit: cover; }
+  /* Use CSS backgrounds as stand-ins */
+  .img-soap-1 { background: linear-gradient(135deg, #c8d5c0 0%, #8faa82 100%); }
+  .img-soap-2 { background: linear-gradient(135deg, #e2c8b0 0%, #c49878 100%); }
+  .img-soap-3 { background: linear-gradient(135deg, #d4c4a8 0%, #b09070 100%); }
+  .img-soap-4 { background: linear-gradient(135deg, #bccfb5 0%, #7a9970 100%); }
+  /* Botanical overlays */
+  .hero-img-cell::after {
+    content: ''; position: absolute; inset: 0;
+    opacity: 0.15;
+  }
+  .hero-badge {
+    position: absolute; bottom: 40px; left: -20px; z-index: 10;
+    background: var(--warm-white);
+    padding: 18px 24px;
+    box-shadow: 0 8px 40px rgba(61,47,37,0.12);
+    min-width: 200px;
+  }
+  .hero-badge-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--sage); margin-bottom: 6px;
+  }
+  .hero-badge-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 19px; font-weight: 400; color: var(--bark);
+  }
+
+  /* ── MARQUEE ── */
+  .marquee-strip {
+    background: var(--bark);
+    padding: 14px 0; overflow: hidden;
+    display: flex; align-items: center;
+  }
+  .marquee-inner {
+    display: flex; gap: 48px;
+    animation: marquee 22s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-item {
+    display: flex; align-items: center; gap: 16px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--cream);
+    opacity: 0.75;
+  }
+  .marquee-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--terracotta); }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    display: flex; align-items: center; gap: 16px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.26em;
+    text-transform: uppercase; color: var(--sage);
+    margin-bottom: 20px;
+  }
+  .section-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--stone-light);
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px; font-weight: 300; line-height: 1.1;
+    color: var(--bark);
+  }
+  .section-title em { font-style: italic; color: var(--terracotta); }
+
+  /* ── FEATURED PRODUCTS ── */
+  .products-section {
+    padding: 100px 80px;
+  }
+  .products-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 56px;
+  }
+  .filter-tabs {
+    display: flex; gap: 4px;
+  }
+  .filter-tab {
+    padding: 8px 20px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; border: none;
+    background: transparent; color: var(--stone);
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .filter-tab.active,
+  .filter-tab:hover { color: var(--bark); border-bottom-color: var(--bark); }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+  .product-card {
+    position: relative; background: var(--warm-white);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .product-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(61,47,37,0.1); }
+  .product-card:first-child {
+    grid-column: span 2; grid-row: span 2;
+  }
+  .product-img {
+    width: 100%; aspect-ratio: 1/1;
+    position: relative; overflow: hidden;
+  }
+  .product-card:first-child .product-img { aspect-ratio: unset; height: 480px; }
+  /* Product colour placeholders */
+  .pimg-1 { background: linear-gradient(160deg, #d4e0ce 0%, #8faa82 100%); }
+  .pimg-2 { background: linear-gradient(160deg, #f0e0d0 0%, #d4a080 100%); }
+  .pimg-3 { background: linear-gradient(160deg, #e8dcc8 0%, #c0a080 100%); }
+  .pimg-4 { background: linear-gradient(160deg, #ccdcc8 0%, #80a878 100%); }
+  .pimg-5 { background: linear-gradient(160deg, #e0ccd0 0%, #b08898 100%); }
+
+  /* Floating botanical SVG inside product img */
+  .botanical {
+    position: absolute; opacity: 0.18;
+    pointer-events: none;
+  }
+
+  .product-badges {
+    position: absolute; top: 16px; left: 16px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .badge-new { background: var(--bark); color: var(--cream); }
+  .badge-eco { background: var(--sage); color: white; }
+  .badge-sale { background: var(--terracotta); color: white; }
+
+  .quick-add {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: var(--bark); color: var(--cream);
+    padding: 14px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; text-align: center;
+    transform: translateY(100%); transition: transform 0.3s ease;
+    border: none;
+  }
+  .product-card:hover .quick-add { transform: translateY(0); }
+
+  .wishlist-btn {
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px;
+    background: white; border-radius: 50%; border: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .product-card:hover .wishlist-btn { opacity: 1; }
+
+  .product-info { padding: 18px 20px 22px; }
+  .product-category {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--sage);
+    margin-bottom: 6px;
+  }
+  .product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 400; color: var(--bark);
+    margin-bottom: 4px; line-height: 1.2;
+  }
+  .product-card:first-child .product-name { font-size: 26px; }
+  .product-desc {
+    font-size: 12px; font-weight: 300; color: var(--text-light);
+    line-height: 1.6; margin-bottom: 14px;
+  }
+  .product-footer {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .product-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 400; color: var(--bark);
+  }
+  .product-price .was {
+    font-size: 14px; color: var(--stone);
+    text-decoration: line-through; margin-left: 8px;
+  }
+  .product-scent-dots {
+    display: flex; gap: 5px;
+  }
+  .scent-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    border: 1.5px solid var(--stone-light);
+    position: relative;
+  }
+  .scent-dot.active { border-color: transparent; }
+  .scent-lavender.active { background: #c4b4d4; }
+  .scent-rose.active { background: #e8a8a0; }
+  .scent-cedar.active { background: #b89070; }
+  .scent-mint.active { background: #90c8b0; }
+
+  /* ── PRODUCT DETAIL MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(42,33,24,0.6); backdrop-filter: blur(4px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -48%);
+    width: min(900px, 92vw);
+    max-height: 92vh; overflow-y: auto;
+    background: var(--warm-white);
+    display: grid; grid-template-columns: 1fr 1fr;
+    transition: transform 0.35s ease;
+  }
+  .modal-overlay.open .modal { transform: translate(-50%, -50%); }
+  .modal-img-panel {
+    position: relative; background: var(--sage-pale);
+    min-height: 520px;
+  }
+  .modal-main-img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .modal-thumbs {
+    position: absolute; bottom: 20px; left: 20px;
+    display: flex; gap: 8px;
+  }
+  .modal-thumb {
+    width: 52px; height: 52px;
+    border: 2px solid transparent;
+    background: var(--cream);
+    transition: border-color 0.2s;
+  }
+  .modal-thumb.active { border-color: var(--terracotta); }
+  .modal-info { padding: 48px 40px; overflow-y: auto; }
+  .modal-close {
+    position: absolute; top: 20px; right: 20px; z-index: 10;
+    background: white; border: none;
+    width: 36px; height: 36px; border-radius: 50%;
+    font-size: 18px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .modal-eyebrow {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--sage); margin-bottom: 10px;
+  }
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 34px; font-weight: 300; line-height: 1.1;
+    color: var(--bark); margin-bottom: 6px;
+  }
+  .modal-stars { display: flex; align-items: center; gap: 6px; margin-bottom: 20px; }
+  .stars { color: var(--gold); font-size: 13px; letter-spacing: 1px; }
+  .review-count { font-size: 12px; color: var(--stone); }
+  .modal-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px; font-weight: 300; color: var(--bark);
+    margin-bottom: 24px;
+  }
+  .modal-desc {
+    font-size: 13px; font-weight: 300; line-height: 1.8;
+    color: var(--text-mid); margin-bottom: 28px;
+    border-top: 1px solid var(--stone-light);
+    border-bottom: 1px solid var(--stone-light);
+    padding: 20px 0;
+  }
+  .option-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--bark);
+    margin-bottom: 12px;
+  }
+  .scent-options {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;
+  }
+  .scent-btn {
+    padding: 8px 18px; border: 1.5px solid var(--stone-light);
+    background: none; font-family: 'Jost', sans-serif;
+    font-size: 12px; color: var(--text-mid);
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+  }
+  .scent-btn.active {
+    border-color: var(--bark); background: var(--bark); color: white;
+  }
+  .scent-btn:hover:not(.active) { border-color: var(--bark); }
+  .size-options { display: flex; gap: 8px; margin-bottom: 28px; }
+  .size-btn {
+    width: 42px; height: 42px; border: 1.5px solid var(--stone-light);
+    background: none; font-family: 'Jost', sans-serif;
+    font-size: 12px; font-weight: 500; color: var(--text-mid);
+    transition: all 0.2s;
+  }
+  .size-btn.active { border-color: var(--bark); background: var(--bark); color: white; }
+  .qty-row { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .qty-ctrl {
+    display: flex; align-items: center; border: 1.5px solid var(--stone-light);
+  }
+  .qty-btn {
+    width: 40px; height: 40px; border: none; background: none;
+    font-size: 18px; color: var(--bark);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .qty-val {
+    width: 44px; text-align: center;
+    font-size: 14px; font-weight: 500;
+    border-left: 1.5px solid var(--stone-light);
+    border-right: 1.5px solid var(--stone-light);
+    height: 40px; display: flex; align-items: center; justify-content: center;
+  }
+  .add-cart-btn {
+    flex: 1; padding: 16px;
+    background: var(--bark); color: var(--cream);
+    border: none; font-family: 'Jost', sans-serif;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transition: background 0.25s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .add-cart-btn:hover { background: var(--terracotta); }
+  .modal-perks {
+    display: flex; flex-direction: column; gap: 10px; margin-top: 24px;
+  }
+  .perk {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 12px; color: var(--text-mid); font-weight: 300;
+  }
+  .perk-icon { font-size: 15px; }
+
+  /* ── VALUES STRIP ── */
+  .values-strip {
+    background: var(--sage-pale);
+    padding: 64px 80px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 48px;
+  }
+  .value-item { display: flex; flex-direction: column; gap: 14px; }
+  .value-icon {
+    font-size: 28px;
+    width: 52px; height: 52px;
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .value-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 400; color: var(--bark);
+  }
+  .value-text {
+    font-size: 13px; font-weight: 300; line-height: 1.7; color: var(--text-mid);
+  }
+
+  /* ── EDITORIAL BANNER ── */
+  .editorial {
+    display: grid; grid-template-columns: 1fr 1fr;
+    min-height: 500px;
+  }
+  .editorial-img {
+    background: linear-gradient(180deg, #c8d5c0 0%, #5a7a50 100%);
+    position: relative; overflow: hidden; min-height: 500px;
+  }
+  .editorial-img::after {
+    content: '🌿';
+    position: absolute; bottom: -10px; right: 20px;
+    font-size: 280px; opacity: 0.12;
+  }
+  .editorial-content {
+    background: var(--bark);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 80px 72px;
+  }
+  .editorial-eyebrow {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--terracotta-light);
+    margin-bottom: 20px;
+  }
+  .editorial-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px; font-weight: 300; line-height: 1.05;
+    color: var(--cream); margin-bottom: 24px;
+  }
+  .editorial-title em { font-style: italic; color: var(--terracotta-light); }
+  .editorial-body {
+    font-size: 14px; font-weight: 300; line-height: 1.8;
+    color: rgba(250,247,242,0.7);
+    max-width: 380px; margin-bottom: 40px;
+  }
+  .btn-light {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 36px; width: fit-content;
+    border: 1.5px solid rgba(250,247,242,0.3); color: var(--cream);
+    font-family: 'Jost', sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; text-decoration: none;
+    transition: background 0.25s, border-color 0.25s;
+  }
+  .btn-light:hover { background: var(--terracotta); border-color: var(--terracotta); }
+
+  /* ── INGREDIENTS ── */
+  .ingredients-section { padding: 100px 80px; background: var(--warm-white); }
+  .ingredients-grid {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px;
+    margin-top: 60px;
+  }
+  .ingredient-card {
+    text-align: center; padding: 28px 16px;
+    border: 1px solid var(--stone-light);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .ingredient-card:hover { border-color: var(--sage); transform: translateY(-3px); }
+  .ingredient-icon { font-size: 32px; margin-bottom: 12px; }
+  .ingredient-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px; font-weight: 400; color: var(--bark);
+    margin-bottom: 6px;
+  }
+  .ingredient-prop {
+    font-size: 11px; font-weight: 300; color: var(--stone); letter-spacing: 0.06em;
+  }
+
+  /* ── REVIEWS ── */
+  .reviews-section { padding: 100px 80px; background: var(--cream); }
+  .reviews-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+    margin-top: 56px;
+  }
+  .review-card {
+    background: var(--warm-white); padding: 36px;
+    border-left: 3px solid var(--terracotta);
+  }
+  .review-rating { color: var(--gold); font-size: 13px; margin-bottom: 16px; }
+  .review-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 19px; font-weight: 300; font-style: italic;
+    line-height: 1.6; color: var(--bark); margin-bottom: 24px;
+  }
+  .reviewer {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .reviewer-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--sage-pale);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 500; color: var(--sage);
+    font-family: 'Jost', sans-serif;
+  }
+  .reviewer-name { font-size: 13px; font-weight: 500; color: var(--bark); }
+  .reviewer-location { font-size: 11px; color: var(--stone); margin-top: 2px; }
+
+  /* ── NEWSLETTER ── */
+  .newsletter { background: var(--bark); padding: 100px 80px; text-align: center; }
+  .newsletter-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px; font-weight: 300; color: var(--cream);
+    margin-bottom: 16px;
+  }
+  .newsletter-title em { font-style: italic; color: var(--terracotta-light); }
+  .newsletter-sub {
+    font-size: 14px; font-weight: 300; color: rgba(250,247,242,0.65);
+    max-width: 440px; margin: 0 auto 40px; line-height: 1.7;
+  }
+  .newsletter-form {
+    display: flex; max-width: 460px; margin: 0 auto; gap: 0;
+  }
+  .newsletter-input {
+    flex: 1; padding: 16px 24px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    color: white; font-family: 'Jost', sans-serif; font-size: 13px;
+    outline: none;
+  }
+  .newsletter-input::placeholder { color: rgba(255,255,255,0.35); }
+  .newsletter-btn {
+    padding: 16px 28px;
+    background: var(--terracotta); border: none; color: white;
+    font-family: 'Jost', sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+    transition: background 0.2s;
+  }
+  .newsletter-btn:hover { background: var(--terracotta-light); }
+
+  /* ── CART DRAWER ── */
+  .cart-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 150;
+    width: 420px; background: var(--warm-white);
+    box-shadow: -8px 0 40px rgba(61,47,37,0.12);
+    transform: translateX(100%); transition: transform 0.35s ease;
+    display: flex; flex-direction: column;
+  }
+  .cart-drawer.open { transform: translateX(0); }
+  .cart-header {
+    padding: 28px 32px;
+    border-bottom: 1px solid var(--stone-light);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .cart-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; font-weight: 300; color: var(--bark);
+  }
+  .cart-close {
+    background: none; border: none; font-size: 22px; color: var(--bark);
+  }
+  .cart-items { flex: 1; overflow-y: auto; padding: 24px 32px; display: flex; flex-direction: column; gap: 20px; }
+  .cart-item {
+    display: flex; gap: 16px; padding-bottom: 20px;
+    border-bottom: 1px solid var(--stone-light);
+  }
+  .cart-item-img {
+    width: 72px; height: 72px; flex-shrink: 0;
+    background: var(--sage-pale);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+  }
+  .cart-item-info { flex: 1; }
+  .cart-item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-weight: 400; color: var(--bark); margin-bottom: 4px;
+  }
+  .cart-item-variant { font-size: 11px; color: var(--stone); margin-bottom: 10px; }
+  .cart-item-price { font-size: 15px; font-weight: 500; color: var(--bark); }
+  .cart-footer {
+    padding: 24px 32px;
+    border-top: 1px solid var(--stone-light);
+  }
+  .cart-subtotal {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+  }
+  .subtotal-label { font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); }
+  .subtotal-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; font-weight: 300; color: var(--bark);
+  }
+  .cart-note { font-size: 11px; color: var(--stone); margin-bottom: 20px; }
+  .checkout-btn {
+    width: 100%; padding: 18px;
+    background: var(--bark); color: var(--cream); border: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+    transition: background 0.25s;
+  }
+  .checkout-btn:hover { background: var(--terracotta); }
+  .continue-btn {
+    width: 100%; padding: 12px; margin-top: 10px;
+    background: none; border: 1.5px solid var(--stone-light);
+    color: var(--text-mid); font-family: 'Jost', sans-serif;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .empty-cart {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 16px;
+    text-align: center;
+  }
+  .empty-cart-icon { font-size: 48px; opacity: 0.3; }
+  .empty-cart-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 300; color: var(--text-mid);
+  }
+  .empty-cart-sub { font-size: 13px; font-weight: 300; color: var(--stone); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--bark); color: var(--cream);
+    padding: 80px 80px 40px;
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 64px;
+    margin-bottom: 64px;
+  }
+  .footer-brand {}
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px; font-weight: 300; letter-spacing: 0.1em;
+    color: var(--cream); text-decoration: none; display: block; margin-bottom: 20px;
+  }
+  .footer-logo span { font-style: italic; color: var(--terracotta-light); }
+  .footer-tagline {
+    font-size: 13px; font-weight: 300; line-height: 1.7;
+    color: rgba(250,247,242,0.5); max-width: 280px; margin-bottom: 28px;
+  }
+  .footer-socials { display: flex; gap: 12px; }
+  .social-link {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(250,247,242,0.6); text-decoration: none; font-size: 13px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .social-link:hover { border-color: var(--terracotta-light); color: var(--terracotta-light); }
+  .footer-col-title {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.22em;
+    text-transform: uppercase; color: rgba(250,247,242,0.4);
+    margin-bottom: 20px;
+  }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .footer-links a {
+    font-size: 13px; font-weight: 300; color: rgba(250,247,242,0.65);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--terracotta-light); }
+  .footer-bottom {
+    padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-copy { font-size: 12px; color: rgba(250,247,242,0.35); font-weight: 300; }
+  .footer-payments { display: flex; gap: 8px; }
+  .payment-icon {
+    height: 22px; padding: 3px 8px;
+    background: rgba(255,255,255,0.08); border-radius: 3px;
+    font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.5);
+    display: flex; align-items: center;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px);
+    z-index: 300;
+    background: var(--bark); color: var(--cream);
+    padding: 14px 28px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px; font-weight: 400;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  .toast-icon { color: var(--terracotta-light); font-size: 16px; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.7s ease both; }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.22s; }
+  .delay-3 { animation-delay: 0.34s; }
+  .delay-4 { animation-delay: 0.46s; }
+  .delay-5 { animation-delay: 0.58s; }
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- ── NAVIGATION ── -->
+<nav>
+  <a href="#" class="nav-logo">bloom<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#products">Shop</a></li>
+    <li><a href="#about">Our Story</a></li>
+    <li><a href="#ingredients">Ingredients</a></li>
+    <li><a href="#reviews">Journal</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="nav-icon" onclick="openCart()" style="background:none;border:none;position:relative;">
+      🛒
+      <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow fade-up">Small Batch · Handcrafted</div>
+    <h1 class="hero-title fade-up delay-1">
+      Botanicals<br>made with<br><em>intention.</em>
+    </h1>
+    <p class="hero-sub fade-up delay-2">
+      Pure plant-based soaps, balms, and bath rituals crafted in small batches from ethically sourced botanicals. No fillers. No shortcuts. Just skin that feels like itself again.
+    </p>
+    <div class="hero-ctas fade-up delay-3">
+      <a href="#products" class="btn-primary">Shop Collection ↘</a>
+      <a href="#about" class="btn-secondary">Our Story</a>
+    </div>
+    <div class="hero-trust fade-up delay-4">
+      <div class="trust-item">
+        <span class="trust-num">100%</span>
+        <span class="trust-label">Plant Based</span>
+      </div>
+      <div class="trust-item">
+        <span class="trust-num">18k+</span>
+        <span class="trust-label">Happy Skin</span>
+      </div>
+      <div class="trust-item">
+        <span class="trust-num">0</span>
+        <span class="trust-label">Nasties</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-img-grid">
+      <div class="hero-img-cell img-soap-1" style="display:flex;align-items:center;justify-content:center;font-size:80px;">🌿</div>
+      <div class="hero-img-cell img-soap-2" style="display:flex;align-items:center;justify-content:center;font-size:80px;">🌸</div>
+      <div class="hero-img-cell img-soap-3" style="display:flex;align-items:center;justify-content:center;font-size:80px;">🍃</div>
+      <div class="hero-img-cell img-soap-4" style="display:flex;align-items:center;justify-content:center;font-size:80px;">🌱</div>
+    </div>
+    <div class="hero-badge">
+      <div class="hero-badge-label">New Collection</div>
+      <div class="hero-badge-text">Spring Harvest '26</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MARQUEE ── -->
+<div class="marquee-strip">
+  <div class="marquee-inner" id="marqueeInner"></div>
+</div>
+
+<!-- ── PRODUCTS ── -->
+<section class="products-section" id="products">
+  <div class="products-header">
+    <div>
+      <div class="section-label">Our Collection</div>
+      <h2 class="section-title">Handcrafted<br>for <em>your</em> ritual</h2>
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="setFilter(this,'all')">All</button>
+      <button class="filter-tab" onclick="setFilter(this,'soap')">Soaps</button>
+      <button class="filter-tab" onclick="setFilter(this,'balm')">Balms</button>
+      <button class="filter-tab" onclick="setFilter(this,'bath')">Bath</button>
+      <button class="filter-tab" onclick="setFilter(this,'gift')">Gift Sets</button>
+    </div>
+  </div>
+  <div class="products-grid" id="productsGrid">
+    <!-- filled by JS -->
+  </div>
+</section>
+
+<!-- ── VALUES ── -->
+<div class="values-strip">
+  <div class="value-item">
+    <div class="value-icon">🌱</div>
+    <div class="value-title">Plant-Based Always</div>
+    <p class="value-text">Every ingredient is sourced from nature. We never use synthetic fragrance, parabens, or sulphates.</p>
+  </div>
+  <div class="value-item">
+    <div class="value-icon">🧪</div>
+    <div class="value-title">Small Batch Made</div>
+    <p class="value-text">Each batch is hand-poured and cured for a minimum of 28 days for the richest, gentlest bar possible.</p>
+  </div>
+  <div class="value-item">
+    <div class="value-icon">♻️</div>
+    <div class="value-title">Zero Plastic</div>
+    <p class="value-text">All packaging is recycled, recyclable, or compostable. Our products ship in seed-paper wrap you can plant.</p>
+  </div>
+  <div class="value-item">
+    <div class="value-icon">🤝</div>
+    <div class="value-title">Fair Trade Sourced</div>
+    <p class="value-text">We partner directly with small farms and co-operatives, paying fair prices and building long-term relationships.</p>
+  </div>
+</div>
+
+<!-- ── EDITORIAL ── -->
+<section class="editorial" id="about">
+  <div class="editorial-img" style="display:flex;align-items:center;justify-content:center;font-size:160px;">
+    🌿
+  </div>
+  <div class="editorial-content">
+    <div class="editorial-eyebrow">Our Story</div>
+    <h2 class="editorial-title">Born in a kitchen.<br><em>Grown with care.</em></h2>
+    <p class="editorial-body">
+      Bloom started when our founder, frustrated by endless ingredient labels she couldn't read, decided to make her own soap. That first batch — a simple lavender and olive oil bar — was given to neighbours, then neighbours' neighbours.
+      <br><br>
+      Five years on, we still make every product by hand in our Cape Town studio, still read every ingredient label, and still believe that what goes on your skin should be as honest as what goes in your body.
+    </p>
+    <a href="#" class="btn-light">Read the full story →</a>
+  </div>
+</section>
+
+<!-- ── INGREDIENTS ── -->
+<section class="ingredients-section" id="ingredients">
+  <div class="section-label">What's inside</div>
+  <h2 class="section-title">Ingredients you<br>can <em>trust</em></h2>
+  <div class="ingredients-grid">
+    <div class="ingredient-card">
+      <div class="ingredient-icon">🌸</div>
+      <div class="ingredient-name">Lavender</div>
+      <div class="ingredient-prop">Calming · Anti-inflammatory</div>
+    </div>
+    <div class="ingredient-card">
+      <div class="ingredient-icon">🫒</div>
+      <div class="ingredient-name">Olive Oil</div>
+      <div class="ingredient-prop">Moisturising · Rich in Vit E</div>
+    </div>
+    <div class="ingredient-card">
+      <div class="ingredient-icon">🥥</div>
+      <div class="ingredient-name">Coconut Oil</div>
+      <div class="ingredient-prop">Cleansing · Lather-rich</div>
+    </div>
+    <div class="ingredient-card">
+      <div class="ingredient-icon">🌹</div>
+      <div class="ingredient-name">Rosehip</div>
+      <div class="ingredient-prop">Regenerating · Anti-ageing</div>
+    </div>
+    <div class="ingredient-card">
+      <div class="ingredient-icon">🍯</div>
+      <div class="ingredient-name">Raw Honey</div>
+      <div class="ingredient-prop">Antibacterial · Humectant</div>
+    </div>
+    <div class="ingredient-card">
+      <div class="ingredient-icon">🌿</div>
+      <div class="ingredient-name">Tea Tree</div>
+      <div class="ingredient-prop">Purifying · Antifungal</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── REVIEWS ── -->
+<section class="reviews-section" id="reviews">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:56px;">
+    <div>
+      <div class="section-label">What people say</div>
+      <h2 class="section-title">Loved by<br><em>real skin</em></h2>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;color:var(--bark);">4.9</div>
+      <div style="color:var(--gold);font-size:16px;margin-bottom:4px;">★★★★★</div>
+      <div style="font-size:12px;color:var(--stone);">from 1,247 reviews</div>
+    </div>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="review-rating">★★★★★</div>
+      <p class="review-text">"My eczema-prone skin has never felt this calm. I've tried everything and nothing compares to the Calendula Bar."</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">SN</div>
+        <div>
+          <div class="reviewer-name">Sané Nkosi</div>
+          <div class="reviewer-location">Johannesburg · Verified buyer</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-rating">★★★★★</div>
+      <p class="review-text">"The packaging is gorgeous but what really got me was how long the bars last. One bar is still going at 6 weeks."</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">LA</div>
+        <div>
+          <div class="reviewer-name">Lara Abrahams</div>
+          <div class="reviewer-location">Cape Town · Verified buyer</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-rating">★★★★★</div>
+      <p class="review-text">"I gifted the Spring set to my mom and she called me the next day just to say how amazing the Rose & Geranium soap smells."</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">TM</div>
+        <div>
+          <div class="reviewer-name">Thandi Mokoena</div>
+          <div class="reviewer-location">Pretoria · Verified buyer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── NEWSLETTER ── -->
+<section class="newsletter">
+  <h2 class="newsletter-title">Join the <em>bloom</em> circle</h2>
+  <p class="newsletter-sub">Seasonal recipes, ingredient deep-dives, early access to new batches, and 10% off your first order. No noise, just goodness.</p>
+  <div class="newsletter-form">
+    <input type="email" class="newsletter-input" placeholder="your@email.com" />
+    <button class="newsletter-btn" onclick="subscribeNewsletter(this)">Subscribe</button>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="footer-logo">bloom<span>.</span></a>
+      <p class="footer-tagline">Small batch botanicals, handcrafted with care in Cape Town, South Africa. No shortcuts, ever.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-link">ig</a>
+        <a href="#" class="social-link">fb</a>
+        <a href="#" class="social-link">pt</a>
+        <a href="#" class="social-link">tk</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Shop</div>
+      <ul class="footer-links">
+        <li><a href="#">All Products</a></li>
+        <li><a href="#">Soaps</a></li>
+        <li><a href="#">Balms & Serums</a></li>
+        <li><a href="#">Bath Rituals</a></li>
+        <li><a href="#">Gift Sets</a></li>
+        <li><a href="#">New Arrivals</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">About</div>
+      <ul class="footer-links">
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Ingredients</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Studio Visits</a></li>
+        <li><a href="#">Wholesale</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Help</div>
+      <ul class="footer-links">
+        <li><a href="#">Shipping & Returns</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Track Order</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Bloom Botanicals. All rights reserved.</span>
+    <div class="footer-payments">
+      <span class="payment-icon">VISA</span>
+      <span class="payment-icon">MC</span>
+      <span class="payment-icon">EFT</span>
+      <span class="payment-icon">ZAP</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ── PRODUCT DETAIL MODAL ── -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-img-panel">
+      <div id="modalMainImg" style="width:100%;height:100%;min-height:520px;display:flex;align-items:center;justify-content:center;font-size:120px;background:var(--sage-pale);"></div>
+      <div class="modal-thumbs" id="modalThumbs"></div>
+    </div>
+    <div class="modal-info" id="modalInfo"></div>
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+  </div>
+</div>
+
+<!-- ── CART DRAWER ── -->
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <div class="cart-title">Your Bag</div>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="empty-cart">
+      <div class="empty-cart-icon">🛒</div>
+      <div class="empty-cart-text">Your bag is empty</div>
+      <div class="empty-cart-sub">Add something beautiful</div>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-subtotal">
+      <span class="subtotal-label">Subtotal</span>
+      <span class="subtotal-value" id="cartTotal">R0</span>
+    </div>
+    <div class="cart-note">Shipping calculated at checkout · Free over R500</div>
+    <button class="checkout-btn">Proceed to Checkout →</button>
+    <button class="continue-btn" onclick="closeCart()">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✓</span>
+  <span id="toastMsg">Added to your bag</span>
+</div>
+
+<script>
+// ── DATA ──
+const products = [
+  {
+    id: 1, name: "Lavender & Oat", category: "soap", tag: "soap",
+    desc: "A deeply nourishing cold-process soap with organic oat milk, lavender essential oil, and colloidal oatmeal. Perfect for sensitive and reactive skin.",
+    price: 89, badge: "bestseller",
+    emoji: "🌸", color: "linear-gradient(160deg,#d4c4e0 0%,#9070a8 100%)",
+    scents: ["Lavender","Unscented","Rose"],
+    sizes: ["100g","180g"],
+    ingredients: "Saponified olive oil, coconut oil, organic oat milk, lavender essential oil, colloidal oatmeal",
+    rating: 4.9, reviews: 312,
+    featured: true
+  },
+  {
+    id: 2, name: "Rose & Geranium", category: "soap", tag: "soap",
+    desc: "Rose petal-infused bar with geranium essential oil. Uplifting, floral, and kind to dry skin.",
+    price: 95, badge: "new",
+    emoji: "🌹", color: "linear-gradient(160deg,#f0d0d8 0%,#d08090 100%)",
+    scents: ["Rose","Geranium","Rose+Geranium"],
+    sizes: ["100g","180g"],
+    rating: 4.8, reviews: 87
+  },
+  {
+    id: 3, name: "Cedar & Clay", category: "soap", tag: "soap",
+    desc: "Deep cleansing bar with kaolin clay and cedarwood. Draws out impurities, balances oiliness.",
+    price: 92,
+    emoji: "🪵", color: "linear-gradient(160deg,#e0d0c0 0%,#a08060 100%)",
+    scents: ["Cedar","Patchouli","Cedar+Patchouli"],
+    sizes: ["100g","180g"],
+    rating: 4.7, reviews: 145
+  },
+  {
+    id: 4, name: "Mint & Tea Tree", category: "soap", tag: "soap",
+    desc: "Purifying bar with peppermint and tea tree. A morning wake-up for oily or blemish-prone skin.",
+    price: 88,
+    emoji: "🌿", color: "linear-gradient(160deg,#c0e0d0 0%,#60a880 100%)",
+    scents: ["Mint","Tea Tree","Eucalyptus"],
+    sizes: ["100g","180g"],
+    rating: 4.9, reviews: 203
+  },
+  {
+    id: 5, name: "Rosehip Body Balm", category: "balm", tag: "balm",
+    desc: "Intensive overnight balm with rosehip seed oil, shea butter, and carrot seed oil. Repairs and regenerates.",
+    price: 210, badge: "eco",
+    emoji: "🫙", color: "linear-gradient(160deg,#f0d8c0 0%,#d09060 100%)",
+    scents: ["Original","Rose+Jasmine","Unscented"],
+    sizes: ["50ml","100ml"],
+    rating: 5.0, reviews: 92
+  },
+  {
+    id: 6, name: "Spring Gift Set", category: "gift", tag: "gift",
+    desc: "Four bestselling soaps in our signature seed-paper gift box. Perfect for gifting.",
+    price: 340, badge: "sale", was: 380,
+    emoji: "🎁", color: "linear-gradient(160deg,#e8e0d0 0%,#b0a080 100%)",
+    scents: ["Mix of 4"],
+    sizes: ["Set of 4"],
+    rating: 4.9, reviews: 57
+  }
+];
+
+let cart = [];
+let activeFilter = 'all';
+
+// ── RENDER PRODUCTS ──
+function renderProducts() {
+  const grid = document.getElementById('productsGrid');
+  const filtered = activeFilter === 'all' ? products : products.filter(p => p.tag === activeFilter);
+  grid.innerHTML = filtered.map((p,i) => `
+    <div class="product-card ${i===0&&activeFilter==='all'?'featured':''}" data-id="${p.id}" style="${i===0&&activeFilter==='all'?'grid-column:span 2;grid-row:span 2;':''}">
+      <div class="product-img" style="background:${p.color};${i===0&&activeFilter==='all'?'height:480px;':''} display:flex;align-items:center;justify-content:center;font-size:${i===0&&activeFilter==='all'?'120px':'72px'}">
+        ${p.emoji}
+        ${p.badge ? `<div class="product-badges"><span class="badge badge-${p.badge==='bestseller'?'new':p.badge==='eco'?'eco':'sale'}">${p.badge}</span></div>` : ''}
+        <button class="wishlist-btn" onclick="event.stopPropagation();wishlist(${p.id})">♡</button>
+      </div>
+      <button class="quick-add" onclick="event.stopPropagation();quickAdd(${p.id})">+ Add to Bag</button>
+      <div class="product-info" onclick="openProduct(${p.id})" style="cursor:none;">
+        <div class="product-category">${p.category}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-desc">${p.desc.substring(0,80)}…</div>
+        <div class="product-footer">
+          <div class="product-price">R${p.price}${p.was?`<span class="was">R${p.was}</span>`:''}
+          </div>
+          <div class="product-scent-dots">
+            ${(p.scents||[]).slice(0,3).map((_,si) => `<div class="scent-dot ${si===0?'active scent-lavender':''}"></div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function setFilter(btn, filter) {
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  activeFilter = filter;
+  renderProducts();
+}
+
+// ── PRODUCT MODAL ──
+function openProduct(id) {
+  const p = products.find(x => x.id === id);
+  document.getElementById('modalMainImg').innerHTML = p.emoji;
+  document.getElementById('modalMainImg').style.background = p.color;
+
+  document.getElementById('modalInfo').innerHTML = `
+    <div class="modal-eyebrow">${p.category} · Handcrafted</div>
+    <div class="modal-title">${p.name}</div>
+    <div class="modal-stars">
+      <span class="stars">★★★★★</span>
+      <span class="review-count">${p.rating} (${p.reviews} reviews)</span>
+    </div>
+    <div class="modal-price">R${p.price}</div>
+    <div class="modal-desc">${p.desc}</div>
+
+    <div class="option-label">Scent / Variant</div>
+    <div class="scent-options">
+      ${(p.scents||['Original']).map((s,i) => `<button class="scent-btn ${i===0?'active':''}" onclick="selectScent(this)">${s}</button>`).join('')}
+    </div>
+
+    <div class="option-label">Size</div>
+    <div class="size-options">
+      ${(p.sizes||['100g']).map((s,i) => `<button class="size-btn ${i===0?'active':''}" onclick="selectSize(this)">${s}</button>`).join('')}
+    </div>
+
+    <div class="qty-row">
+      <div class="qty-ctrl">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <div class="qty-val" id="qtyVal">1</div>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+      <button class="add-cart-btn" onclick="addFromModal(${p.id})">
+        Add to Bag · R${p.price}
+      </button>
+    </div>
+
+    <div class="modal-perks">
+      <div class="perk"><span class="perk-icon">🚚</span> Free shipping on orders over R500</div>
+      <div class="perk"><span class="perk-icon">♻️</span> Plastic-free, plantable packaging</div>
+      <div class="perk"><span class="perk-icon">↩️</span> 30-day returns if not completely happy</div>
+    </div>
+  `;
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+let qty = 1;
+function changeQty(d) {
+  qty = Math.max(1, qty + d);
+  const el = document.getElementById('qtyVal');
+  if (el) el.textContent = qty;
+}
+
+function selectScent(btn) {
+  btn.closest('.scent-options').querySelectorAll('.scent-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function selectSize(btn) {
+  btn.closest('.size-options').querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function addFromModal(id) {
+  const p = products.find(x => x.id === id);
+  const scent = document.querySelector('.scent-btn.active')?.textContent || p.scents[0];
+  const size = document.querySelector('.size-btn.active')?.textContent || p.sizes[0];
+  for (let i = 0; i < qty; i++) addToCart(p, scent, size);
+  closeModalDirect();
+  openCart();
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  qty = 1;
+}
+
+// ── CART ──
+function addToCart(product, scent, size) {
+  cart.push({ product, scent, size });
+  updateCartUI();
+  showToast(`${product.name} added to your bag`);
+}
+
+function quickAdd(id) {
+  const p = products.find(x => x.id === id);
+  addToCart(p, p.scents[0], p.sizes[0]);
+  openCart();
+}
+
+function wishlist(id) {
+  showToast('Saved to your wishlist ♡');
+}
+
+function updateCartUI() {
+  const badge = document.getElementById('cartBadge');
+  badge.textContent = cart.length;
+
+  const itemsEl = document.getElementById('cartItems');
+  const footer = document.getElementById('cartFooter');
+  const totalEl = document.getElementById('cartTotal');
+
+  if (cart.length === 0) {
+    itemsEl.innerHTML = `<div class="empty-cart"><div class="empty-cart-icon">🛒</div><div class="empty-cart-text">Your bag is empty</div><div class="empty-cart-sub">Add something beautiful</div></div>`;
+    footer.style.display = 'none';
+    return;
+  }
+
+  const total = cart.reduce((sum, item) => sum + item.product.price, 0);
+  totalEl.textContent = `R${total}`;
+  footer.style.display = 'block';
+
+  itemsEl.innerHTML = cart.map((item, i) => `
+    <div class="cart-item">
+      <div class="cart-item-img">${item.product.emoji}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.product.name}</div>
+        <div class="cart-item-variant">${item.scent} · ${item.size}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="cart-item-price">R${item.product.price}</div>
+          <button onclick="removeFromCart(${i})" style="background:none;border:none;font-size:18px;color:var(--stone);opacity:0.5;">×</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function removeFromCart(i) {
+  cart.splice(i, 1);
+  updateCartUI();
+}
+
+function openCart() {
+  document.getElementById('cartDrawer').classList.add('open');
+}
+function closeCart() {
+  document.getElementById('cartDrawer').classList.remove('open');
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── NEWSLETTER ──
+function subscribeNewsletter(btn) {
+  const input = btn.previousElementSibling;
+  if (input.value.includes('@')) {
+    btn.textContent = '✓ Subscribed!';
+    btn.style.background = 'var(--sage)';
+    input.value = '';
+  }
+}
+
+// ── MARQUEE ──
+const marqueeItems = [
+  'Small Batch','Handcrafted in Cape Town','100% Plant Based',
+  'Plastic Free Packaging','Cold Process Method','No Synthetics Ever',
+  'Cruelty Free','Ethically Sourced','Made with Love'
+];
+const inner = document.getElementById('marqueeInner');
+const doubled = [...marqueeItems, ...marqueeItems];
+inner.innerHTML = doubled.map(t =>
+  `<div class="marquee-item"><div class="marquee-dot"></div>${t}</div>`
+).join('');
+
+// ── CURSOR ──
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
+  ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px';
+});
+document.querySelectorAll('button, a').forEach(el => {
+  el.addEventListener('mouseenter', () => { cur.style.transform = 'translate(-50%,-50%) scale(2.5)'; ring.style.opacity = '0'; });
+  el.addEventListener('mouseleave', () => { cur.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.opacity = '0.5'; });
+});
+
+// ── INIT ──
+renderProducts();
+</script>
+</body>
+</html>
